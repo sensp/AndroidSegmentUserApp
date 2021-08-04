@@ -1,4 +1,4 @@
-package mbaas.com.nifty.androidsegmentuserapp;
+package mbaas.com.nifcloud.androidsegmentuserapp;
 
 import org.junit.Test;
 

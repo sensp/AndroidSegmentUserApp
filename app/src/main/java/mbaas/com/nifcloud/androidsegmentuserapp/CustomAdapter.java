@@ -1,4 +1,4 @@
-package mbaas.com.nifty.androidsegmentuserapp;
+package mbaas.com.nifcloud.androidsegmentuserapp;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -11,7 +11,9 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.nifty.cloud.mb.core.NCMBObject;
+import com.nifcloud.mbaas.core.NCMBException;
+import com.nifcloud.mbaas.core.NCMBObject;
+
 
 /**
  * Customer List view
@@ -132,7 +134,11 @@ public class CustomAdapter extends BaseAdapter {
         // テキスト変更後
         public void afterTextChanged(Editable s) {
             //List更新データを設定
-            mUserObject.put(this.mKeyText, s.toString());
+            try {
+                mUserObject.put(this.mKeyText, s.toString());
+            } catch (NCMBException e) {
+                e.printStackTrace();
+            }
         }
 
     }

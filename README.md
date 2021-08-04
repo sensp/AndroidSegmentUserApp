@@ -1,41 +1,38 @@
-# 【Android】ユーザー情報を更新してみよう！
-*2016/12/7作成*
+# 【Android】ユーザー情報を更新してみよう！ for Java
 
 ![画像01](/readme-img/001.png)
 
 ## 概要
-* [ニフティクラウドmobile backend](http://mb.cloud.nifty.com/)の『会員管理機能』を利用してAndroidアプリにログイン機能を実装し、ユーザー情報を更新するサンプルプロジェクトです
-* 簡単な操作ですぐに [ニフティクラウドmobile backend](http://mb.cloud.nifty.com/)の機能を体験いただけます★☆
+* [ニフクラ mobile backend](https://mbaas.nifcloud.com/) の『会員管理機能』を利用してAndroidアプリにログイン機能を実装し、ユーザー情報を更新するサンプルプロジェクトです
+* 簡単な操作ですぐに [ニフクラ mobile backend](https://mbaas.nifcloud.com/) の機能を体験いただけます
 
-## ニフティクラウドmobile backendって何？？
+## ニフクラ mobile backendって何？？
 スマートフォンアプリのバックエンド機能（プッシュ通知・データストア・会員管理・ファイルストア・SNS連携・位置情報検索・スクリプト）が**開発不要**、しかも基本**無料**(注1)で使えるクラウドサービス！
 
-注1：詳しくは[こちら](http://mb.cloud.nifty.com/price.htm)をご覧ください
+注1：詳しくは[こちら](https://mbaas.nifcloud.com/price.htm)をご覧ください
 
 ![画像02](/readme-img/002.png)
 
-# 準備
-
-* Android Studio
-* mBaaSの[アカウント作成](http://mb.cloud.nifty.com/signup.htm)
-
 ## 動作環境
-* Windows 7 Professional
-* Android Studio 2.1.3
-* Android ver 4x以上
-* Android SDK 2.2.4以上
+* MacOS Mojave v10.14.6 (18G103)
+* Android studio: 3.4.1
+* Simulator: Pixel 2 Android OS Version 10
 
 ※上記内容で動作確認をしています
 
 ## 作業の手順
-### 1. [ニフティクラウドmobile backend](http://mb.cloud.nifty.com/)の会員登録とログイン
-
-* 上記リンクから会員登録（無料）をします。登録ができたらログインをすると下図のように「アプリの新規作成」画面が出るのでアプリを作成します
+### 1. ニフクラ mobile backend の会員登録・ログインとアプリの新規作成
+* 下記リンクから会員登録（無料）をします
+  * https://console.mbaas.nifcloud.com/signup
+* 登録ができたら下記リンクからログインします
+  * https://console.mbaas.nifcloud.com/
+* 下図のように「アプリの新規作成」画面が出るのでアプリを作成します
+  * 既に mobile backend を利用したことがある方は左上の「＋新しいアプリ」をクリックすると同じ画面が表示されます
 
 ![画像03](/readme-img/003.png)
 
-* アプリ作成されると下図のような画面になります
-* この２種類のAPIキー（アプリケーションキーとクライアントキー）はAndroidアプリに[ニフティクラウドmobile backend](http://mb.cloud.nifty.com/)を紐付けるために使用します
+* アプリ作成されるとAPIキー（アプリケーションキーとクライアントキー）が発行されます
+* この２種類のAPIキーはこの後ダウンロードするサンプルアプリと ニフクラ mobile backend を紐付けるため、あとで使います。
 
 ![画像04](/readme-img/004.png)
 
@@ -43,75 +40,93 @@
 
 ![画像05](/readme-img/005.png)
 
-### 2. [GitHub](https://github.com/NIFTYCloud-mbaas/AndroidSegmentUserApp)からサンプルプロジェクトのダウンロード
-
-* 下記リンクをクリックしてプロジェクトをローカルにダウンロードします
-
- * __[AndroidSegmentUserApp](https://github.com/NIFTYCloud-mbaas/AndroidSegmentUserApp/archive/master.zip)__
-
-### 3. AndroidStudioでアプリを起動
-
-* AndroidStudioを開き「Open File or Project」からダウンロードしたプロジェクトのフォルダ(AndroidSegmentUserApp)を選択します
+### 2. サンプルプロジェクトのダウンロード
+* 下記リンクをクリックしてプロジェクトをダウンロードします
+ * https://github.com/NIFCLOUD-mbaas/AndroidSegmentUserApp/archive/master.zip
+* ダウンロードしたプロジェクトを解凍します
+* AndroidStudio を開きます、「Open an existing Android Studio project」をクリックして解凍したプロジェクトを選択します
+* プロジェクトが開かれます
 
 ![画像06](/readme-img/006.png)
 
+### 3. SDKの導入（実装済み）
+
+※このサンプルアプリには既にSDKが実装済み（下記手順）となっています。（ver.3.0.2)<br>　最新版をご利用の場合は入れ替えてご利用ください。
+
+* SDKダウンロード
+SDKはここ（[SDK リリースページ](https://github.com/NIFCLOUD-mbaas/ncmb_android/releases)）から取得してください.
+  - NCMB.jarファイルがダウンロードします。
+* SDKをインポート
+  - app/libsフォルダにNCMB.jarをコピーします
+* 設定追加
+  - app/build.gradleファイルに以下を追加します
+```gradle
+dependencies {
+    implementation 'com.google.code.gson:gson:2.3.1'
+    implementation files('libs/NCMB.jar')
+}
+```
+  - androidManifestの設定
+    - <application>タグの直前に以下のpermissionを追加します
+```html
+<uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+```
+
 ### 4. APIキーの設定
 
-* `MainActivity.java`を編集します
-* 先程[ニフティクラウドmobile backend](http://mb.cloud.nifty.com/)のダッシュボード上で確認したAPIキーを貼り付けます
+* AndroidStudio で MainActivity.java を開きます
+  * ディレクトリはデフォルトで「Android」が選択されていますので、「Project」に切り替えてから探してください
+
+![画像14](/readme-img/014.png)
+
+* APIキー（アプリケーションキーとクライアントキー）の設定をします
 
 ![画像07](/readme-img/007.png)
 
 * それぞれ`YOUR_APPLICATION_KEY`と`YOUR_CLIENT_KEY`の部分を書き換えます
- * このとき、ダブルクォーテーション（`"`）を消さないように注意してください！
+   - このとき、ダブルクォーテーション（`"`）を消さないように注意してください！
 * 書き換え終わったら保存してください
- * Windowsの場合、Ctrl + Sで保存できます。
- * Macの場合、command + Sで保存できます。
-
-* AndroidStudioからビルドする。
- * 「プロジェクト場所」\app\build\outputs\apk\ ***.apk ファイルが生成される
+   * Windowsの場合、Ctrl + Sで保存できます。
+   * Macの場合、command + Sで保存できます。
 
 ### 5.動作確認
-
-* Android Studioから、適当なSimulatorを選択します
+* エミュレーターでアプリをビルドします
+ * 失敗する場合は一度「Clean Project」を実行してから再度ビルドしてください
 * アプリが起動したら、Login画面が表示されます
-* 初回は__`No account yet? Create one`__ リンクをクリックして、新規会員登録を行います
+* 初回は `No account yet? Create one` リンクをクリックして、新規会員登録を行います
 
-![画像13](/readme-img/008.png)
+![画像08](/readme-img/008.png)
 
 * `User Name`と`Password`を２つ入力して「CREATE ACCOUNT」ボタンをタップします
 * 会員登録が成功するとログインされ、下記ユーザー情報の一覧が表示されます
-* SignUpに成功するとmBaaS上に会員情報が作成されます！
+* SignUpに成功すると ニフクラ mobile backend 上に会員情報が作成されます！
 
-![画像14](/readme-img/009.png)
+![画像09](/readme-img/009.png)
 
 * ログインに失敗した場合はアラートでログイン失敗を表示します
 
 #### 新しいフィールドの追加
-* 新しいフィールドの追加をしてみましょう。"favorite"というフィールドを作り、中身には"music"と入れてみました。こうすることで、ユーザー情報に新しい属性を付与することができるようになります！
+* 新しいフィールドの追加をしてみましょう
+  - 例として`"favorite"` というフィールドを作り、中身には `"music"` と入れてみます
 * 編集が完了したら更新ボタンをタップして下さい
 
-![画像15](/readme-img/010.png)
+![画像10](/readme-img/010.png)
 
-* 更新後、リストビューが自動でリロードされ、追加・更新が行われていることがわかります
-* 追加したフィールドは後から編集することが可能です
+* 更新後、リストビューが自動でリロードされ、追加・更新が行われていることが確認できます
+* 追加したフィールドは後から編集することも可能です
 
-![画像16](/readme-img/011.png)
+![画像11](/readme-img/011.png)
 
-* ダッシュボードから、更新ができていることを確認してみましょう！
+* ニフクラ mobile backend の管理画面上で、会員データの更新ができていることを確認してみましょう
 
-![画像17](/readme-img/012.png)
+![画像12](/readme-img/012.png)
 
-* ActionBar右上側メニューから「Logout」を押すとログアウトが出来ます
+* （参考）ActionBar右上側メニューから「Logout」を押すとログアウトが出来ます
 
-![画像17](/readme-img/013.png)
+![画像13](/readme-img/013.png)
 
-## 解説
-* 下記３点について解説します
- * 会員登録
- * ログイン
- * 会員情報の取得
-
+## ロジック紹介
 ### 会員登録
 `SignupActivity.java`
 
@@ -170,13 +185,12 @@ userInfo.fetchInBackground(new FetchCallback<NCMBObject>() {
     });
 ```
 
-# 参考
+## 参考
 
 サンプルコードをカスタマイズすることで、様々な機能を実装できます！
-データ保存・データ検索・会員管理・プッシュ通知などの機能を実装したい場合には、
-以下のドキュメントもご参考ください。
+データ保存・データ検索・会員管理・プッシュ通知などの機能を実装したい場合には、以下のドキュメント（for Java）もご参照ください。
 
-* [ドキュメント](http://mb.cloud.nifty.com/doc/current/)
-* [ドキュメント・データストア](http://mb.cloud.nifty.com/doc/current/datastore/basic_usage_android.html)
-* [ドキュメント・会員管理](http://mb.cloud.nifty.com/doc/current/user/basic_usage_android.html)
-* [ドキュメント・プッシュ通知](http://mb.cloud.nifty.com/doc/current/push/basic_usage_android.html)
+* [ドキュメント](https://mbaas.nifcloud.com/doc/current/)
+  * [ドキュメント・データストア](https://mbaas.nifcloud.com/doc/current/datastore/basic_usage_android.html)
+  * [ドキュメント・会員管理](https://mbaas.nifcloud.com/doc/current/user/basic_usage_android.html)
+  * [ドキュメント・プッシュ通知](https://mbaas.nifcloud.com/doc/current/push/basic_usage_android.html)
